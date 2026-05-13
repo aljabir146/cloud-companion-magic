@@ -40,6 +40,7 @@ function AuthLayout() {
         { to: "/port-forwards", icon: Network, label: "Port Forwarding", emoji: "🔀" },
         { to: "/backups", icon: HardDrive, label: "Backups", emoji: "💾" },
         { to: "/console", icon: Terminal, label: "Web Console", emoji: "🖥️" },
+        { to: "/logs", icon: FileText, label: "Panel Logs", emoji: "📜" },
         { to: "/api-keys", icon: Wrench, label: "API Keys", emoji: "🔑" },
       ],
     },
