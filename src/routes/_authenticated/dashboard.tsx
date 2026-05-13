@@ -68,12 +68,13 @@ function Dashboard() {
       </div>
 
       {/* Quick tiles */}
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-7">
         <QuickTile to="/vps" emoji="💻" label="My VPS" />
         <QuickTile to="/port-forwards" emoji="🔀" label="Port Forwards" />
-        <QuickTile to="/profile" emoji="🙂" label="My Profile" />
-        <QuickTile to="/notifications" emoji="🔔" label="Notifications" />
-        {isAdmin && <QuickTile to="/admin" emoji="👑" label="Admin Panel" />}
+        <QuickTile to="/backups" emoji="💾" label="Backups" />
+        <QuickTile to="/api-keys" emoji="🔑" label="API Keys" />
+        <QuickTile to="/profile" emoji="🙂" label="Profile" />
+        <QuickTile to="/notifications" emoji="🔔" label="Alerts" />
         <QuickTile to="/vps/new" emoji="➕" label="Create VPS" />
       </div>
 
