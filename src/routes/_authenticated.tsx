@@ -4,7 +4,7 @@ import { useAuth } from "@/lib/auth";
 import { MinecraftBackground } from "@/components/MinecraftBackground";
 import {
   LayoutDashboard, Server, Network, User, Bell, Cog, ScrollText, HardDrive,
-  Crown, LogOut, Menu, X, Wrench, Terminal,
+  Crown, LogOut, Menu, X, Wrench, Terminal, FileText,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -40,6 +40,7 @@ function AuthLayout() {
         { to: "/port-forwards", icon: Network, label: "Port Forwarding", emoji: "🔀" },
         { to: "/backups", icon: HardDrive, label: "Backups", emoji: "💾" },
         { to: "/console", icon: Terminal, label: "Web Console", emoji: "🖥️" },
+        { to: "/logs", icon: FileText, label: "Panel Logs", emoji: "📜" },
         { to: "/api-keys", icon: Wrench, label: "API Keys", emoji: "🔑" },
       ],
     },

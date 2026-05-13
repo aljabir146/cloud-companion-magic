@@ -18,6 +18,7 @@ import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedPortForwardsRouteImport } from './routes/_authenticated/port-forwards'
 import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authenticated/notifications'
 import { Route as AuthenticatedNodesRouteImport } from './routes/_authenticated/nodes'
+import { Route as AuthenticatedLogsRouteImport } from './routes/_authenticated/logs'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedConsoleRouteImport } from './routes/_authenticated/console'
 import { Route as AuthenticatedBackupsRouteImport } from './routes/_authenticated/backups'
@@ -73,6 +74,11 @@ const AuthenticatedNodesRoute = AuthenticatedNodesRouteImport.update({
   path: '/nodes',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedLogsRoute = AuthenticatedLogsRouteImport.update({
+  id: '/logs',
+  path: '/logs',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -123,6 +129,7 @@ export interface FileRoutesByFullPath {
   '/backups': typeof AuthenticatedBackupsRoute
   '/console': typeof AuthenticatedConsoleRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/logs': typeof AuthenticatedLogsRoute
   '/nodes': typeof AuthenticatedNodesRoute
   '/notifications': typeof AuthenticatedNotificationsRoute
   '/port-forwards': typeof AuthenticatedPortForwardsRoute
@@ -141,6 +148,7 @@ export interface FileRoutesByTo {
   '/backups': typeof AuthenticatedBackupsRoute
   '/console': typeof AuthenticatedConsoleRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/logs': typeof AuthenticatedLogsRoute
   '/nodes': typeof AuthenticatedNodesRoute
   '/notifications': typeof AuthenticatedNotificationsRoute
   '/port-forwards': typeof AuthenticatedPortForwardsRoute
@@ -161,6 +169,7 @@ export interface FileRoutesById {
   '/_authenticated/backups': typeof AuthenticatedBackupsRoute
   '/_authenticated/console': typeof AuthenticatedConsoleRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/logs': typeof AuthenticatedLogsRoute
   '/_authenticated/nodes': typeof AuthenticatedNodesRoute
   '/_authenticated/notifications': typeof AuthenticatedNotificationsRoute
   '/_authenticated/port-forwards': typeof AuthenticatedPortForwardsRoute
@@ -181,6 +190,7 @@ export interface FileRouteTypes {
     | '/backups'
     | '/console'
     | '/dashboard'
+    | '/logs'
     | '/nodes'
     | '/notifications'
     | '/port-forwards'
@@ -199,6 +209,7 @@ export interface FileRouteTypes {
     | '/backups'
     | '/console'
     | '/dashboard'
+    | '/logs'
     | '/nodes'
     | '/notifications'
     | '/port-forwards'
@@ -218,6 +229,7 @@ export interface FileRouteTypes {
     | '/_authenticated/backups'
     | '/_authenticated/console'
     | '/_authenticated/dashboard'
+    | '/_authenticated/logs'
     | '/_authenticated/nodes'
     | '/_authenticated/notifications'
     | '/_authenticated/port-forwards'
@@ -301,6 +313,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedNodesRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/logs': {
+      id: '/_authenticated/logs'
+      path: '/logs'
+      fullPath: '/logs'
+      preLoaderRoute: typeof AuthenticatedLogsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -379,6 +398,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedBackupsRoute: typeof AuthenticatedBackupsRoute
   AuthenticatedConsoleRoute: typeof AuthenticatedConsoleRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedLogsRoute: typeof AuthenticatedLogsRoute
   AuthenticatedNodesRoute: typeof AuthenticatedNodesRoute
   AuthenticatedNotificationsRoute: typeof AuthenticatedNotificationsRoute
   AuthenticatedPortForwardsRoute: typeof AuthenticatedPortForwardsRoute
@@ -392,6 +412,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedBackupsRoute: AuthenticatedBackupsRoute,
   AuthenticatedConsoleRoute: AuthenticatedConsoleRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedLogsRoute: AuthenticatedLogsRoute,
   AuthenticatedNodesRoute: AuthenticatedNodesRoute,
   AuthenticatedNotificationsRoute: AuthenticatedNotificationsRoute,
   AuthenticatedPortForwardsRoute: AuthenticatedPortForwardsRoute,

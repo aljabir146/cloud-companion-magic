@@ -113,6 +113,83 @@ export type Database = {
         }
         Relationships: []
       }
+      console_session_logs: {
+        Row: {
+          command: string
+          created_at: string
+          exit_code: number | null
+          id: string
+          ok: boolean
+          output: string
+          owner_id: string
+          session_id: string
+        }
+        Insert: {
+          command: string
+          created_at?: string
+          exit_code?: number | null
+          id?: string
+          ok?: boolean
+          output?: string
+          owner_id: string
+          session_id: string
+        }
+        Update: {
+          command?: string
+          created_at?: string
+          exit_code?: number | null
+          id?: string
+          ok?: boolean
+          output?: string
+          owner_id?: string
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "console_session_logs_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "console_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      console_sessions: {
+        Row: {
+          ended_at: string | null
+          host: string
+          id: string
+          node_id: string | null
+          owner_id: string
+          port: number
+          started_at: string
+          username: string
+          vps_id: string | null
+        }
+        Insert: {
+          ended_at?: string | null
+          host: string
+          id?: string
+          node_id?: string | null
+          owner_id: string
+          port?: number
+          started_at?: string
+          username: string
+          vps_id?: string | null
+        }
+        Update: {
+          ended_at?: string | null
+          host?: string
+          id?: string
+          node_id?: string | null
+          owner_id?: string
+          port?: number
+          started_at?: string
+          username?: string
+          vps_id?: string | null
+        }
+        Relationships: []
+      }
       nodes: {
         Row: {
           agent_secret: string
@@ -203,6 +280,36 @@ export type Database = {
           read?: boolean
           title?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      panel_logs: {
+        Row: {
+          created_at: string
+          id: string
+          level: string
+          message: string
+          meta: Json | null
+          node_id: string | null
+          source: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          level?: string
+          message: string
+          meta?: Json | null
+          node_id?: string | null
+          source?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          level?: string
+          message?: string
+          meta?: Json | null
+          node_id?: string | null
+          source?: string
         }
         Relationships: []
       }
@@ -386,6 +493,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      lookup_email_by_username: { Args: { _username: string }; Returns: string }
     }
     Enums: {
       app_role: "admin" | "user"
