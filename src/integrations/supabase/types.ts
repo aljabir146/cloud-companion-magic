@@ -493,6 +493,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      lookup_email_by_username: { Args: { _username: string }; Returns: string }
     }
     Enums: {
       app_role: "admin" | "user"
