@@ -2,8 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+import { useRealtimeInvalidate } from "@/lib/realtime";
 import {
-  Server, Cpu, MemoryStick, HardDrive, Plus, Settings, Bell, Crown, Network, User as UserIcon,
+  Server, Cpu, MemoryStick, HardDrive, Plus, Crown,
 } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
@@ -13,6 +14,7 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 
 function Dashboard() {
   const { user, isAdmin } = useAuth();
+  useRealtimeInvalidate("vps", [["vps", user?.id], ["vps"]]);
 
   const { data: vps = [] } = useQuery({
     queryKey: ["vps", user?.id],
