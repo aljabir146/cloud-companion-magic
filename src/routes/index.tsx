@@ -46,7 +46,7 @@ function Landing() {
             <span className="h-1.5 w-1.5 rounded-full bg-success pulse-dot" />
             v2 · multi-node cluster ready
           </div>
-          <h1 className="pixel-font text-5xl font-bold leading-tight md:text-7xl">
+          <h1 className="pixel-font text-6xl font-normal leading-[0.95] md:text-8xl lg:text-9xl">
             High-Performance
             <br />
             <span className="text-gradient">VPS Management</span>
