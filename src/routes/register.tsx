@@ -38,8 +38,8 @@ function RegisterPage() {
         <Link to="/" className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
           <span className="emoji-anim">🐯</span> TigerHost
         </Link>
-        <h1 className="pixel-font text-3xl font-bold">Create account</h1>
-        <p className="mt-1 text-sm text-muted-foreground">First user becomes admin <span className="emoji-anim">👑</span></p>
+        <h1 className="pixel-font text-4xl">Create account</h1>
+        <p className="mt-1 text-sm text-muted-foreground">Pick a username and join the cluster <span className="emoji-anim">🔥</span></p>
         <form onSubmit={onSubmit} className="mt-6 space-y-4">
           <Field label="Username">
             <input required value={username} onChange={(e) => setUsername(e.target.value)}
