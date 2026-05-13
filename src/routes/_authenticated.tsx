@@ -38,6 +38,8 @@ function AuthLayout() {
         { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard", emoji: "📊" },
         { to: "/vps", icon: Server, label: "My VPS", emoji: "💻" },
         { to: "/port-forwards", icon: Network, label: "Port Forwarding", emoji: "🔀" },
+        { to: "/backups", icon: HardDrive, label: "Backups", emoji: "💾" },
+        { to: "/api-keys", icon: Wrench, label: "API Keys", emoji: "🔑" },
       ],
     },
     {

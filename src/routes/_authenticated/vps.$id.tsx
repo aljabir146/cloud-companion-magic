@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Play, Square, RefreshCw, Trash2, Terminal, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { StatusBadge } from "./dashboard";
+import { useRealtimeInvalidate } from "@/lib/realtime";
 
 export const Route = createFileRoute("/_authenticated/vps/$id")({
   component: VpsDetail,
@@ -15,6 +16,8 @@ function VpsDetail() {
   const { id } = Route.useParams();
   const nav = useNavigate();
   const qc = useQueryClient();
+  useRealtimeInvalidate("vps", [["vps", id]]);
+  useRealtimeInvalidate("vps_logs", [["vps-logs", id]]);
 
   const { data: vps, isLoading } = useQuery({
     queryKey: ["vps", id],
