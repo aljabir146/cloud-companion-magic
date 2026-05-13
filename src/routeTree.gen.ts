@@ -19,6 +19,8 @@ import { Route as AuthenticatedPortForwardsRouteImport } from './routes/_authent
 import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authenticated/notifications'
 import { Route as AuthenticatedNodesRouteImport } from './routes/_authenticated/nodes'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedBackupsRouteImport } from './routes/_authenticated/backups'
+import { Route as AuthenticatedApiKeysRouteImport } from './routes/_authenticated/api-keys'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedVpsNewRouteImport } from './routes/_authenticated/vps.new'
 import { Route as AuthenticatedVpsIdRouteImport } from './routes/_authenticated/vps.$id'
@@ -75,6 +77,16 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedBackupsRoute = AuthenticatedBackupsRouteImport.update({
+  id: '/backups',
+  path: '/backups',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedApiKeysRoute = AuthenticatedApiKeysRouteImport.update({
+  id: '/api-keys',
+  path: '/api-keys',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -101,6 +113,8 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/api-keys': typeof AuthenticatedApiKeysRoute
+  '/backups': typeof AuthenticatedBackupsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/nodes': typeof AuthenticatedNodesRoute
   '/notifications': typeof AuthenticatedNotificationsRoute
@@ -116,6 +130,8 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/api-keys': typeof AuthenticatedApiKeysRoute
+  '/backups': typeof AuthenticatedBackupsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/nodes': typeof AuthenticatedNodesRoute
   '/notifications': typeof AuthenticatedNotificationsRoute
@@ -133,6 +149,8 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/api-keys': typeof AuthenticatedApiKeysRoute
+  '/_authenticated/backups': typeof AuthenticatedBackupsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/nodes': typeof AuthenticatedNodesRoute
   '/_authenticated/notifications': typeof AuthenticatedNotificationsRoute
@@ -150,6 +168,8 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/admin'
+    | '/api-keys'
+    | '/backups'
     | '/dashboard'
     | '/nodes'
     | '/notifications'
@@ -165,6 +185,8 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/admin'
+    | '/api-keys'
+    | '/backups'
     | '/dashboard'
     | '/nodes'
     | '/notifications'
@@ -181,6 +203,8 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/_authenticated/admin'
+    | '/_authenticated/api-keys'
+    | '/_authenticated/backups'
     | '/_authenticated/dashboard'
     | '/_authenticated/nodes'
     | '/_authenticated/notifications'
@@ -272,6 +296,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/backups': {
+      id: '/_authenticated/backups'
+      path: '/backups'
+      fullPath: '/backups'
+      preLoaderRoute: typeof AuthenticatedBackupsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/api-keys': {
+      id: '/_authenticated/api-keys'
+      path: '/api-keys'
+      fullPath: '/api-keys'
+      preLoaderRoute: typeof AuthenticatedApiKeysRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/admin': {
       id: '/_authenticated/admin'
       path: '/admin'
@@ -318,6 +356,8 @@ const AuthenticatedVpsRouteWithChildren =
 
 interface AuthenticatedRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedApiKeysRoute: typeof AuthenticatedApiKeysRoute
+  AuthenticatedBackupsRoute: typeof AuthenticatedBackupsRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedNodesRoute: typeof AuthenticatedNodesRoute
   AuthenticatedNotificationsRoute: typeof AuthenticatedNotificationsRoute
@@ -328,6 +368,8 @@ interface AuthenticatedRouteChildren {
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedApiKeysRoute: AuthenticatedApiKeysRoute,
+  AuthenticatedBackupsRoute: AuthenticatedBackupsRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedNodesRoute: AuthenticatedNodesRoute,
   AuthenticatedNotificationsRoute: AuthenticatedNotificationsRoute,
@@ -350,3 +392,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
