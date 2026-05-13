@@ -14,16 +14,267 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      nodes: {
+        Row: {
+          agent_secret: string
+          cpu_cores: number
+          created_at: string
+          hostname: string
+          id: string
+          last_heartbeat: string | null
+          location: string
+          name: string
+          ram_gb: number
+          status: string
+          storage_gb: number
+          used_cpu: number
+          used_ram: number
+          used_storage: number
+        }
+        Insert: {
+          agent_secret?: string
+          cpu_cores?: number
+          created_at?: string
+          hostname: string
+          id?: string
+          last_heartbeat?: string | null
+          location?: string
+          name: string
+          ram_gb?: number
+          status?: string
+          storage_gb?: number
+          used_cpu?: number
+          used_ram?: number
+          used_storage?: number
+        }
+        Update: {
+          agent_secret?: string
+          cpu_cores?: number
+          created_at?: string
+          hostname?: string
+          id?: string
+          last_heartbeat?: string | null
+          location?: string
+          name?: string
+          ram_gb?: number
+          status?: string
+          storage_gb?: number
+          used_cpu?: number
+          used_ram?: number
+          used_storage?: number
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          created_at: string
+          id: string
+          message: string | null
+          read: boolean
+          title: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message?: string | null
+          read?: boolean
+          title: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string | null
+          read?: boolean
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      port_forwards: {
+        Row: {
+          created_at: string
+          external_port: number
+          id: string
+          internal_port: number
+          owner_id: string
+          protocol: string
+          vps_id: string
+        }
+        Insert: {
+          created_at?: string
+          external_port: number
+          id?: string
+          internal_port: number
+          owner_id: string
+          protocol?: string
+          vps_id: string
+        }
+        Update: {
+          created_at?: string
+          external_port?: number
+          id?: string
+          internal_port?: number
+          owner_id?: string
+          protocol?: string
+          vps_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "port_forwards_vps_id_fkey"
+            columns: ["vps_id"]
+            isOneToOne: false
+            referencedRelation: "vps"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          username: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id: string
+          username?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          username?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      vps: {
+        Row: {
+          cpu: number
+          created_at: string
+          expires_at: string | null
+          id: string
+          ip_address: string | null
+          name: string
+          node_id: string | null
+          os: string
+          owner_id: string
+          ram_mb: number
+          status: string
+          storage_gb: number
+          type: string
+        }
+        Insert: {
+          cpu?: number
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          ip_address?: string | null
+          name: string
+          node_id?: string | null
+          os?: string
+          owner_id: string
+          ram_mb?: number
+          status?: string
+          storage_gb?: number
+          type?: string
+        }
+        Update: {
+          cpu?: number
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          ip_address?: string | null
+          name?: string
+          node_id?: string | null
+          os?: string
+          owner_id?: string
+          ram_mb?: number
+          status?: string
+          storage_gb?: number
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vps_node_id_fkey"
+            columns: ["node_id"]
+            isOneToOne: false
+            referencedRelation: "nodes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vps_logs: {
+        Row: {
+          action: string
+          created_at: string
+          id: string
+          message: string | null
+          vps_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          id?: string
+          message?: string | null
+          vps_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          id?: string
+          message?: string | null
+          vps_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vps_logs_vps_id_fkey"
+            columns: ["vps_id"]
+            isOneToOne: false
+            referencedRelation: "vps"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +401,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
