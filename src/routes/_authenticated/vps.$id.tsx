@@ -109,6 +109,27 @@ function VpsDetail() {
         <SpecCard emoji="🗄️" label="Node" value={vps.nodes?.name ?? "auto"} sub={vps.nodes?.location} />
       </div>
 
+      {/* Default credentials (LXC) */}
+      {vps.type === "lxc" && (
+        <div className="glass rounded-2xl p-5 border border-primary/30">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <div className="pixel-font text-sm font-bold">🔑 Default LXC credentials</div>
+              <div className="mt-1 text-xs text-muted-foreground">Auto-provisioned for every container. Change after first login.</div>
+              <div className="mt-3 flex flex-wrap gap-3 font-mono text-xs">
+                <span className="rounded bg-secondary px-2 py-1">host: {vps.ip_address ?? "—"}</span>
+                <span className="rounded bg-secondary px-2 py-1">port: 22</span>
+                <span className="rounded bg-secondary px-2 py-1">user: root</span>
+                <span className="rounded bg-secondary px-2 py-1">pass: root</span>
+              </div>
+            </div>
+            <Link to="/console" className="rounded-md bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground hover:opacity-90">
+              🖥️ Open Web Console
+            </Link>
+          </div>
+        </div>
+      )}
+
       {/* Live metrics */}
       <div className="glass rounded-2xl p-6">
         <div className="mb-4 flex items-center justify-between">

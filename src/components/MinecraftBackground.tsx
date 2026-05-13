@@ -1,14 +1,15 @@
 import { useEffect, useRef } from "react";
 
 /**
- * Animated night-biome Minecraft background.
- * - Pixelated parallax mountains
- * - Falling snow particles
- * - Flickering torches
- * - Drifting aurora
+ * Animated Minecraft NATURE biome background.
+ * - Sunset/day sky with drifting clouds
+ * - Parallax pixel hills (forest greens)
+ * - Pixel oak trees with swaying leaves
+ * - Floating fireflies / butterflies
+ * - Soft sun glow
  * Pure canvas, no images.
  */
-export function MinecraftBackground({ dim = 0.4 }: { dim?: number }) {
+export function MinecraftBackground({ dim = 0.35 }: { dim?: number }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
@@ -21,10 +22,13 @@ export function MinecraftBackground({ dim = 0.4 }: { dim?: number }) {
     let w = 0, h = 0;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-    type Flake = { x: number; y: number; r: number; vy: number; vx: number; o: number };
-    let flakes: Flake[] = [];
+    type Cloud = { x: number; y: number; s: number; v: number };
+    type Bug = { x: number; y: number; phase: number; hue: number; v: number };
+    type Tree = { x: number; baseY: number; scale: number; sway: number };
 
-    const torches: { x: number; y: number; phase: number }[] = [];
+    let clouds: Cloud[] = [];
+    let bugs: Bug[] = [];
+    let trees: Tree[] = [];
 
     function resize() {
       if (!canvas) return;
@@ -33,30 +37,39 @@ export function MinecraftBackground({ dim = 0.4 }: { dim?: number }) {
       canvas.width = w * dpr;
       canvas.height = h * dpr;
       ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
-      // populate flakes
-      const count = Math.floor((w * h) / 9000);
-      flakes = Array.from({ length: count }, () => ({
+
+      const cCount = Math.max(4, Math.floor(w / 260));
+      clouds = Array.from({ length: cCount }, () => ({
         x: Math.random() * w,
-        y: Math.random() * h,
-        r: 0.8 + Math.random() * 1.8,
-        vy: 0.15 + Math.random() * 0.6,
-        vx: -0.2 + Math.random() * 0.4,
-        o: 0.4 + Math.random() * 0.6,
+        y: 30 + Math.random() * (h * 0.35),
+        s: 0.6 + Math.random() * 1.2,
+        v: 0.08 + Math.random() * 0.15,
       }));
-      // torches roughly across base
-      torches.length = 0;
-      const tCount = Math.max(3, Math.floor(w / 320));
-      for (let i = 0; i < tCount; i++) {
-        torches.push({
-          x: (w / (tCount + 1)) * (i + 1) + (Math.random() * 40 - 20),
-          y: h - 60 - Math.random() * 80,
-          phase: Math.random() * Math.PI * 2,
-        });
-      }
+
+      const bCount = Math.floor((w * h) / 22000);
+      bugs = Array.from({ length: bCount }, () => ({
+        x: Math.random() * w,
+        y: h * 0.4 + Math.random() * (h * 0.45),
+        phase: Math.random() * Math.PI * 2,
+        hue: Math.random() < 0.5 ? 50 : Math.random() < 0.5 ? 20 : 320,
+        v: 0.2 + Math.random() * 0.4,
+      }));
+
+      const tCount = Math.max(4, Math.floor(w / 220));
+      trees = Array.from({ length: tCount }, (_, i) => ({
+        x: (w / tCount) * i + (Math.random() * 60 - 30) + 30,
+        baseY: h - 28,
+        scale: 0.85 + Math.random() * 0.6,
+        sway: Math.random() * Math.PI * 2,
+      }));
     }
 
-    // pixelated mountain layer cache
-    function drawMountains(layer: number, color: string, baseY: number, amp: number, step: number, t: number) {
+    function pxRect(x: number, y: number, ww: number, hh: number, color: string) {
+      ctx!.fillStyle = color;
+      ctx!.fillRect(Math.floor(x), Math.floor(y), Math.ceil(ww), Math.ceil(hh));
+    }
+
+    function drawHills(layer: number, color: string, baseY: number, amp: number, step: number, t: number) {
       ctx!.fillStyle = color;
       ctx!.beginPath();
       ctx!.moveTo(0, h);
@@ -65,8 +78,8 @@ export function MinecraftBackground({ dim = 0.4 }: { dim?: number }) {
         const px = x - drift;
         const y =
           baseY +
-          Math.sin(px * 0.012 + layer * 1.7) * amp +
-          Math.sin(px * 0.04 + layer) * (amp * 0.3);
+          Math.sin(px * 0.01 + layer * 1.7) * amp +
+          Math.sin(px * 0.035 + layer) * (amp * 0.35);
         ctx!.lineTo(px, Math.floor(y / step) * step);
         ctx!.lineTo(px + step, Math.floor(y / step) * step);
       }
@@ -75,80 +88,121 @@ export function MinecraftBackground({ dim = 0.4 }: { dim?: number }) {
       ctx!.fill();
     }
 
-    function drawTorch(x: number, y: number, t: number, phase: number) {
-      const flick = 0.7 + Math.sin(t * 0.02 + phase) * 0.15 + Math.random() * 0.15;
-      // halo
-      const grad = ctx!.createRadialGradient(x, y, 2, x, y, 90 * flick);
-      grad.addColorStop(0, `rgba(255, 190, 90, ${0.55 * flick})`);
-      grad.addColorStop(0.4, `rgba(255, 130, 40, ${0.18 * flick})`);
-      grad.addColorStop(1, "rgba(255, 100, 30, 0)");
-      ctx!.fillStyle = grad;
-      ctx!.fillRect(x - 100, y - 100, 200, 200);
-      // stick
-      ctx!.fillStyle = "#3a2a16";
-      ctx!.fillRect(x - 2, y, 4, 22);
-      // flame pixels
-      ctx!.fillStyle = `rgba(255, 220, 120, ${flick})`;
-      ctx!.fillRect(x - 4, y - 8, 8, 8);
-      ctx!.fillStyle = `rgba(255, 150, 40, ${flick})`;
-      ctx!.fillRect(x - 3, y - 4, 6, 6);
-      ctx!.fillStyle = `rgba(255, 90, 20, ${flick * 0.9})`;
-      ctx!.fillRect(x - 2, y - 2, 4, 4);
+    function drawCloud(c: Cloud) {
+      const x = c.x, y = c.y, s = c.s;
+      const block = 8 * s;
+      const layout = [
+        [0,1,1,1,1,0],
+        [1,1,1,1,1,1],
+        [0,1,1,1,1,0],
+      ];
+      for (let r = 0; r < layout.length; r++) {
+        for (let cc = 0; cc < layout[r].length; cc++) {
+          if (layout[r][cc]) {
+            pxRect(x + cc * block, y + r * block, block + 0.5, block + 0.5, "rgba(255,255,255,0.92)");
+          }
+        }
+      }
+    }
+
+    function drawTree(tr: Tree, t: number) {
+      const sway = Math.sin(t * 0.001 + tr.sway) * 1.5;
+      const x = tr.x + sway;
+      const y = tr.baseY;
+      const s = tr.scale;
+      const blk = Math.max(3, Math.round(4 * s));
+      // trunk
+      pxRect(x - blk, y - 18 * s, blk * 2, 22 * s, "#5a3a1f");
+      pxRect(x - blk + 1, y - 18 * s, blk - 1, 22 * s, "#7a4d28");
+      // leaves cluster (pixel canopy)
+      const canopy = [
+        [0,1,1,1,1,1,0],
+        [1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1],
+        [0,1,1,1,1,1,0],
+        [0,0,1,1,1,0,0],
+      ];
+      const cx = x - (canopy[0].length / 2) * blk;
+      const cy = y - 18 * s - canopy.length * blk + 4;
+      for (let r = 0; r < canopy.length; r++) {
+        for (let cc = 0; cc < canopy[r].length; cc++) {
+          if (!canopy[r][cc]) continue;
+          const shade = (r + cc) % 3;
+          const col = shade === 0 ? "#3f8f3a" : shade === 1 ? "#4fa544" : "#2f6b2c";
+          pxRect(cx + cc * blk, cy + r * blk, blk + 0.5, blk + 0.5, col);
+        }
+      }
     }
 
     function frame(t: number) {
       ctx!.clearRect(0, 0, w, h);
 
-      // Sky gradient
+      // Sky — soft sunset/day
       const sky = ctx!.createLinearGradient(0, 0, 0, h);
-      sky.addColorStop(0, "#070a17");
-      sky.addColorStop(0.5, "#0d1330");
-      sky.addColorStop(1, "#1a1f44");
+      sky.addColorStop(0, "#ffb877");
+      sky.addColorStop(0.35, "#ffd58a");
+      sky.addColorStop(0.7, "#a9d8ff");
+      sky.addColorStop(1, "#cfeaff");
       ctx!.fillStyle = sky;
       ctx!.fillRect(0, 0, w, h);
 
-      // Stars
-      ctx!.fillStyle = "rgba(255,255,255,0.7)";
-      for (let i = 0; i < 60; i++) {
-        const sx = (i * 977) % w;
-        const sy = (i * 613) % (h * 0.55);
-        const tw = 0.5 + Math.sin(t * 0.003 + i) * 0.5;
-        ctx!.globalAlpha = 0.3 + tw * 0.5;
-        ctx!.fillRect(sx, sy, 1.5, 1.5);
-      }
-      ctx!.globalAlpha = 1;
-
-      // Mountains (pixelated, parallax)
-      drawMountains(0, "#1a2347", h * 0.65, 60, 18, t);
-      drawMountains(1, "#131a36", h * 0.78, 50, 14, t);
-      drawMountains(2, "#0d1228", h * 0.88, 40, 10, t);
-
-      // Snow ground line
-      ctx!.fillStyle = "#e8eefc";
-      ctx!.fillRect(0, h - 22, w, 22);
-      ctx!.fillStyle = "#9aa9d4";
-      for (let x = 0; x < w; x += 6) {
-        ctx!.fillRect(x, h - 22, 3, 3);
+      // Sun
+      const sunX = w * 0.78, sunY = h * 0.22;
+      const halo = ctx!.createRadialGradient(sunX, sunY, 4, sunX, sunY, 220);
+      halo.addColorStop(0, "rgba(255, 240, 180, 0.9)");
+      halo.addColorStop(0.4, "rgba(255, 180, 90, 0.35)");
+      halo.addColorStop(1, "rgba(255, 140, 60, 0)");
+      ctx!.fillStyle = halo;
+      ctx!.fillRect(sunX - 220, sunY - 220, 440, 440);
+      // pixel sun disc
+      const sunR = 26;
+      for (let yy = -sunR; yy <= sunR; yy += 4) {
+        const ww2 = Math.floor(Math.sqrt(sunR * sunR - yy * yy));
+        pxRect(sunX - ww2, sunY + yy, ww2 * 2, 4, "#fff1b0");
       }
 
-      // Torches
-      for (const tr of torches) drawTorch(tr.x, tr.y, t, tr.phase);
-
-      // Snow
-      ctx!.fillStyle = "#ffffff";
-      for (const f of flakes) {
-        f.y += f.vy;
-        f.x += f.vx + Math.sin((f.y + t * 0.05) * 0.01) * 0.3;
-        if (f.y > h) { f.y = -4; f.x = Math.random() * w; }
-        if (f.x < -4) f.x = w + 4;
-        if (f.x > w + 4) f.x = -4;
-        ctx!.globalAlpha = f.o;
-        ctx!.fillRect(f.x, f.y, f.r, f.r);
+      // Clouds
+      for (const c of clouds) {
+        c.x += c.v;
+        if (c.x > w + 80) c.x = -120;
+        drawCloud(c);
       }
-      ctx!.globalAlpha = 1;
 
-      // Dim overlay
-      ctx!.fillStyle = `rgba(7, 10, 23, ${dim})`;
+      // Distant hills (soft blue)
+      drawHills(0, "#7fb6c9", h * 0.62, 32, 14, t);
+      drawHills(1, "#5b9d8f", h * 0.72, 36, 12, t);
+      // Foreground green hills
+      drawHills(2, "#3f8f3a", h * 0.84, 30, 10, t);
+
+      // Grass strip
+      pxRect(0, h - 28, w, 28, "#3f8f3a");
+      // grass top blades
+      for (let x = 0; x < w; x += 4) {
+        const k = (x * 31) % 7;
+        pxRect(x, h - 28 - (k > 4 ? 2 : 0), 2, 2, "#5fbf4d");
+      }
+      // dirt
+      pxRect(0, h - 6, w, 6, "#6b3f1f");
+
+      // Trees
+      for (const tr of trees) drawTree(tr, t);
+
+      // Fireflies / butterflies
+      for (const b of bugs) {
+        b.phase += 0.04;
+        b.x += Math.cos(b.phase) * b.v;
+        b.y += Math.sin(b.phase * 1.3) * b.v * 0.6;
+        if (b.x < 0) b.x = w; if (b.x > w) b.x = 0;
+        if (b.y < h * 0.3) b.y = h * 0.3; if (b.y > h - 40) b.y = h - 40;
+        const a = 0.55 + Math.sin(t * 0.01 + b.phase) * 0.4;
+        ctx!.fillStyle = `hsla(${b.hue}, 95%, 65%, ${a})`;
+        ctx!.fillRect(b.x, b.y, 3, 3);
+        ctx!.fillStyle = `hsla(${b.hue}, 95%, 80%, ${a * 0.4})`;
+        ctx!.fillRect(b.x - 2, b.y - 1, 7, 5);
+      }
+
+      // Warm dim overlay
+      ctx!.fillStyle = `rgba(20, 14, 30, ${dim})`;
       ctx!.fillRect(0, 0, w, h);
 
       raf = requestAnimationFrame(frame);
