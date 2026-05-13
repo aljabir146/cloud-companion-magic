@@ -4,7 +4,7 @@ import { useAuth } from "@/lib/auth";
 import { MinecraftBackground } from "@/components/MinecraftBackground";
 import {
   LayoutDashboard, Server, Network, User, Bell, Cog, ScrollText, HardDrive,
-  Crown, LogOut, Menu, X, Wrench,
+  Crown, LogOut, Menu, X, Wrench, Terminal,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
