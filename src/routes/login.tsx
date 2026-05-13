@@ -12,18 +12,30 @@ export const Route = createFileRoute("/login")({
 
 function LoginPage() {
   const nav = useNavigate();
-  const [email, setEmail] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    setLoading(false);
-    if (error) return toast.error(error.message);
-    toast.success("Welcome back!");
-    nav({ to: "/dashboard" });
+    try {
+      let email = identifier.trim();
+      if (!email.includes("@")) {
+        const { data, error } = await supabase.rpc("lookup_email_by_username", { _username: email });
+        if (error) throw error;
+        if (!data) throw new Error("No account found for that username");
+        email = data as string;
+      }
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      toast.success("Welcome back!");
+      nav({ to: "/dashboard" });
+    } catch (err: any) {
+      toast.error(err?.message || "Sign-in failed");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -34,10 +46,11 @@ function LoginPage() {
           <span className="emoji-anim">🐯</span> TigerHost
         </Link>
         <h1 className="pixel-font text-3xl font-bold">Sign in</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Welcome back, operator.</p>
+        <p className="mt-1 text-sm text-muted-foreground">Welcome back, operator. Use your <strong className="text-foreground">username</strong> or <strong className="text-foreground">email</strong>.</p>
         <form onSubmit={onSubmit} className="mt-6 space-y-4">
-          <Field label="Email">
-            <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+          <Field label="Username or email">
+            <input required autoFocus value={identifier} onChange={(e) => setIdentifier(e.target.value)}
+              placeholder="jabir  or  you@example.com"
               className="w-full rounded-md border border-input bg-background/50 px-3 py-2 text-sm outline-none focus:border-primary" />
           </Field>
           <Field label="Password">
