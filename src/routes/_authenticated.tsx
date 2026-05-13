@@ -39,6 +39,7 @@ function AuthLayout() {
         { to: "/vps", icon: Server, label: "My VPS", emoji: "💻" },
         { to: "/port-forwards", icon: Network, label: "Port Forwarding", emoji: "🔀" },
         { to: "/backups", icon: HardDrive, label: "Backups", emoji: "💾" },
+        { to: "/console", icon: Terminal, label: "Web Console", emoji: "🖥️" },
         { to: "/api-keys", icon: Wrench, label: "API Keys", emoji: "🔑" },
       ],
     },
