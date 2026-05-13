@@ -19,13 +19,17 @@ function Landing() {
 
       {/* Top nav */}
       <header className="relative z-10 mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
-        <Link to="/" className="flex items-center gap-3">
-          <div className="grid h-10 w-10 place-items-center rounded-md bg-gradient-to-br from-primary to-accent text-2xl shadow-lg">
+        <Link to="/" className="flex items-center gap-3 group">
+          <div className="grid h-14 w-14 place-items-center rounded-lg bg-gradient-to-br from-primary to-accent text-3xl shadow-xl shadow-primary/40 ring-2 ring-primary/30">
             <span className="emoji-anim">🐯</span>
           </div>
-          <div className="leading-tight">
-            <div className="pixel-font text-sm font-bold tracking-wide">TigerHost</div>
-            <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">VPS · LXC · VM</div>
+          <div className="leading-none">
+            <div className="pixel-font text-3xl md:text-4xl font-black tracking-tight text-gradient drop-shadow-[0_2px_8px_rgba(255,120,30,0.45)]">
+              TigerHost
+            </div>
+            <div className="mt-1 text-[11px] md:text-xs font-bold uppercase tracking-[0.3em] text-primary/90">
+              VPS · LXC · VM
+            </div>
           </div>
         </Link>
         <nav className="hidden items-center gap-6 text-sm text-muted-foreground md:flex">
