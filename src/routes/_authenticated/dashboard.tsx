@@ -14,7 +14,7 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 
 function Dashboard() {
   const { user, isAdmin } = useAuth();
-  useRealtimeInvalidate("vps", [["vps", user?.id], ["vps"]]);
+  useRealtimeInvalidate("vps", [["vps", user?.id ?? ""], ["vps"]]);
 
   const { data: vps = [] } = useQuery({
     queryKey: ["vps", user?.id],
