@@ -19,6 +19,7 @@ import { Route as AuthenticatedPortForwardsRouteImport } from './routes/_authent
 import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authenticated/notifications'
 import { Route as AuthenticatedNodesRouteImport } from './routes/_authenticated/nodes'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedConsoleRouteImport } from './routes/_authenticated/console'
 import { Route as AuthenticatedBackupsRouteImport } from './routes/_authenticated/backups'
 import { Route as AuthenticatedApiKeysRouteImport } from './routes/_authenticated/api-keys'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
@@ -77,6 +78,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedConsoleRoute = AuthenticatedConsoleRouteImport.update({
+  id: '/console',
+  path: '/console',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedBackupsRoute = AuthenticatedBackupsRouteImport.update({
   id: '/backups',
   path: '/backups',
@@ -115,6 +121,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRoute
   '/api-keys': typeof AuthenticatedApiKeysRoute
   '/backups': typeof AuthenticatedBackupsRoute
+  '/console': typeof AuthenticatedConsoleRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/nodes': typeof AuthenticatedNodesRoute
   '/notifications': typeof AuthenticatedNotificationsRoute
@@ -132,6 +139,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminRoute
   '/api-keys': typeof AuthenticatedApiKeysRoute
   '/backups': typeof AuthenticatedBackupsRoute
+  '/console': typeof AuthenticatedConsoleRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/nodes': typeof AuthenticatedNodesRoute
   '/notifications': typeof AuthenticatedNotificationsRoute
@@ -151,6 +159,7 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/api-keys': typeof AuthenticatedApiKeysRoute
   '/_authenticated/backups': typeof AuthenticatedBackupsRoute
+  '/_authenticated/console': typeof AuthenticatedConsoleRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/nodes': typeof AuthenticatedNodesRoute
   '/_authenticated/notifications': typeof AuthenticatedNotificationsRoute
@@ -170,6 +179,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/api-keys'
     | '/backups'
+    | '/console'
     | '/dashboard'
     | '/nodes'
     | '/notifications'
@@ -187,6 +197,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/api-keys'
     | '/backups'
+    | '/console'
     | '/dashboard'
     | '/nodes'
     | '/notifications'
@@ -205,6 +216,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/api-keys'
     | '/_authenticated/backups'
+    | '/_authenticated/console'
     | '/_authenticated/dashboard'
     | '/_authenticated/nodes'
     | '/_authenticated/notifications'
@@ -296,6 +308,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/console': {
+      id: '/_authenticated/console'
+      path: '/console'
+      fullPath: '/console'
+      preLoaderRoute: typeof AuthenticatedConsoleRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/backups': {
       id: '/_authenticated/backups'
       path: '/backups'
@@ -358,6 +377,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedApiKeysRoute: typeof AuthenticatedApiKeysRoute
   AuthenticatedBackupsRoute: typeof AuthenticatedBackupsRoute
+  AuthenticatedConsoleRoute: typeof AuthenticatedConsoleRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedNodesRoute: typeof AuthenticatedNodesRoute
   AuthenticatedNotificationsRoute: typeof AuthenticatedNotificationsRoute
@@ -370,6 +390,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedApiKeysRoute: AuthenticatedApiKeysRoute,
   AuthenticatedBackupsRoute: AuthenticatedBackupsRoute,
+  AuthenticatedConsoleRoute: AuthenticatedConsoleRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedNodesRoute: AuthenticatedNodesRoute,
   AuthenticatedNotificationsRoute: AuthenticatedNotificationsRoute,
@@ -392,3 +413,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
