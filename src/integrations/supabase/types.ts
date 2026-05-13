@@ -14,54 +14,168 @@ export type Database = {
   }
   public: {
     Tables: {
+      api_keys: {
+        Row: {
+          created_at: string
+          id: string
+          key_hash: string
+          label: string
+          last_used_at: string | null
+          owner_id: string
+          prefix: string
+          revoked_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          key_hash: string
+          label: string
+          last_used_at?: string | null
+          owner_id: string
+          prefix: string
+          revoked_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          key_hash?: string
+          label?: string
+          last_used_at?: string | null
+          owner_id?: string
+          prefix?: string
+          revoked_at?: string | null
+        }
+        Relationships: []
+      }
+      backup_schedules: {
+        Row: {
+          cadence: string
+          created_at: string
+          enabled: boolean
+          id: string
+          last_run_at: string | null
+          next_run_at: string
+          owner_id: string
+          vps_id: string
+        }
+        Insert: {
+          cadence?: string
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          last_run_at?: string | null
+          next_run_at?: string
+          owner_id: string
+          vps_id: string
+        }
+        Update: {
+          cadence?: string
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          last_run_at?: string | null
+          next_run_at?: string
+          owner_id?: string
+          vps_id?: string
+        }
+        Relationships: []
+      }
+      backups: {
+        Row: {
+          created_at: string
+          id: string
+          label: string
+          owner_id: string
+          size_mb: number
+          source: string
+          status: string
+          vps_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          label: string
+          owner_id: string
+          size_mb?: number
+          source?: string
+          status?: string
+          vps_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          label?: string
+          owner_id?: string
+          size_mb?: number
+          source?: string
+          status?: string
+          vps_id?: string
+        }
+        Relationships: []
+      }
       nodes: {
         Row: {
           agent_secret: string
+          api_url: string | null
           cpu_cores: number
           created_at: string
           hostname: string
           id: string
+          kind: string
           last_heartbeat: string | null
           location: string
           name: string
           ram_gb: number
           status: string
           storage_gb: number
+          tags: string[]
           used_cpu: number
           used_ram: number
           used_storage: number
+          verify_ssl: boolean
+          vps_capacity: number
         }
         Insert: {
           agent_secret?: string
+          api_url?: string | null
           cpu_cores?: number
           created_at?: string
           hostname: string
           id?: string
+          kind?: string
           last_heartbeat?: string | null
           location?: string
           name: string
           ram_gb?: number
           status?: string
           storage_gb?: number
+          tags?: string[]
           used_cpu?: number
           used_ram?: number
           used_storage?: number
+          verify_ssl?: boolean
+          vps_capacity?: number
         }
         Update: {
           agent_secret?: string
+          api_url?: string | null
           cpu_cores?: number
           created_at?: string
           hostname?: string
           id?: string
+          kind?: string
           last_heartbeat?: string | null
           location?: string
           name?: string
           ram_gb?: number
           status?: string
           storage_gb?: number
+          tags?: string[]
           used_cpu?: number
           used_ram?: number
           used_storage?: number
+          verify_ssl?: boolean
+          vps_capacity?: number
         }
         Relationships: []
       }
