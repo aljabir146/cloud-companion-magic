@@ -11,7 +11,18 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedVpsRouteImport } from './routes/_authenticated/vps'
+import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
+import { Route as AuthenticatedPortForwardsRouteImport } from './routes/_authenticated/port-forwards'
+import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authenticated/notifications'
+import { Route as AuthenticatedNodesRouteImport } from './routes/_authenticated/nodes'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedVpsNewRouteImport } from './routes/_authenticated/vps.new'
+import { Route as AuthenticatedVpsIdRouteImport } from './routes/_authenticated/vps.$id'
+import { Route as ApiPublicAgentHeartbeatRouteImport } from './routes/api/public/agent/heartbeat'
 
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
@@ -23,9 +34,65 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedVpsRoute = AuthenticatedVpsRouteImport.update({
+  id: '/vps',
+  path: '/vps',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedPortForwardsRoute =
+  AuthenticatedPortForwardsRouteImport.update({
+    id: '/port-forwards',
+    path: '/port-forwards',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedNotificationsRoute =
+  AuthenticatedNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedNodesRoute = AuthenticatedNodesRouteImport.update({
+  id: '/nodes',
+  path: '/nodes',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedVpsNewRoute = AuthenticatedVpsNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AuthenticatedVpsRoute,
+} as any)
+const AuthenticatedVpsIdRoute = AuthenticatedVpsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AuthenticatedVpsRoute,
+} as any)
+const ApiPublicAgentHeartbeatRoute = ApiPublicAgentHeartbeatRouteImport.update({
+  id: '/api/public/agent/heartbeat',
+  path: '/api/public/agent/heartbeat',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -33,30 +100,104 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/admin': typeof AuthenticatedAdminRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/nodes': typeof AuthenticatedNodesRoute
+  '/notifications': typeof AuthenticatedNotificationsRoute
+  '/port-forwards': typeof AuthenticatedPortForwardsRoute
+  '/profile': typeof AuthenticatedProfileRoute
+  '/vps': typeof AuthenticatedVpsRouteWithChildren
+  '/vps/$id': typeof AuthenticatedVpsIdRoute
+  '/vps/new': typeof AuthenticatedVpsNewRoute
+  '/api/public/agent/heartbeat': typeof ApiPublicAgentHeartbeatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/admin': typeof AuthenticatedAdminRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/nodes': typeof AuthenticatedNodesRoute
+  '/notifications': typeof AuthenticatedNotificationsRoute
+  '/port-forwards': typeof AuthenticatedPortForwardsRoute
+  '/profile': typeof AuthenticatedProfileRoute
+  '/vps': typeof AuthenticatedVpsRouteWithChildren
+  '/vps/$id': typeof AuthenticatedVpsIdRoute
+  '/vps/new': typeof AuthenticatedVpsNewRoute
+  '/api/public/agent/heartbeat': typeof ApiPublicAgentHeartbeatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/nodes': typeof AuthenticatedNodesRoute
+  '/_authenticated/notifications': typeof AuthenticatedNotificationsRoute
+  '/_authenticated/port-forwards': typeof AuthenticatedPortForwardsRoute
+  '/_authenticated/profile': typeof AuthenticatedProfileRoute
+  '/_authenticated/vps': typeof AuthenticatedVpsRouteWithChildren
+  '/_authenticated/vps/$id': typeof AuthenticatedVpsIdRoute
+  '/_authenticated/vps/new': typeof AuthenticatedVpsNewRoute
+  '/api/public/agent/heartbeat': typeof ApiPublicAgentHeartbeatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/register'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/register'
+    | '/admin'
+    | '/dashboard'
+    | '/nodes'
+    | '/notifications'
+    | '/port-forwards'
+    | '/profile'
+    | '/vps'
+    | '/vps/$id'
+    | '/vps/new'
+    | '/api/public/agent/heartbeat'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/register'
-  id: '__root__' | '/' | '/login' | '/register'
+  to:
+    | '/'
+    | '/login'
+    | '/register'
+    | '/admin'
+    | '/dashboard'
+    | '/nodes'
+    | '/notifications'
+    | '/port-forwards'
+    | '/profile'
+    | '/vps'
+    | '/vps/$id'
+    | '/vps/new'
+    | '/api/public/agent/heartbeat'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/login'
+    | '/register'
+    | '/_authenticated/admin'
+    | '/_authenticated/dashboard'
+    | '/_authenticated/nodes'
+    | '/_authenticated/notifications'
+    | '/_authenticated/port-forwards'
+    | '/_authenticated/profile'
+    | '/_authenticated/vps'
+    | '/_authenticated/vps/$id'
+    | '/_authenticated/vps/new'
+    | '/api/public/agent/heartbeat'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
+  ApiPublicAgentHeartbeatRoute: typeof ApiPublicAgentHeartbeatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -75,6 +216,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -82,13 +230,122 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/vps': {
+      id: '/_authenticated/vps'
+      path: '/vps'
+      fullPath: '/vps'
+      preLoaderRoute: typeof AuthenticatedVpsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/profile': {
+      id: '/_authenticated/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AuthenticatedProfileRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/port-forwards': {
+      id: '/_authenticated/port-forwards'
+      path: '/port-forwards'
+      fullPath: '/port-forwards'
+      preLoaderRoute: typeof AuthenticatedPortForwardsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/notifications': {
+      id: '/_authenticated/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof AuthenticatedNotificationsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/nodes': {
+      id: '/_authenticated/nodes'
+      path: '/nodes'
+      fullPath: '/nodes'
+      preLoaderRoute: typeof AuthenticatedNodesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/vps/new': {
+      id: '/_authenticated/vps/new'
+      path: '/new'
+      fullPath: '/vps/new'
+      preLoaderRoute: typeof AuthenticatedVpsNewRouteImport
+      parentRoute: typeof AuthenticatedVpsRoute
+    }
+    '/_authenticated/vps/$id': {
+      id: '/_authenticated/vps/$id'
+      path: '/$id'
+      fullPath: '/vps/$id'
+      preLoaderRoute: typeof AuthenticatedVpsIdRouteImport
+      parentRoute: typeof AuthenticatedVpsRoute
+    }
+    '/api/public/agent/heartbeat': {
+      id: '/api/public/agent/heartbeat'
+      path: '/api/public/agent/heartbeat'
+      fullPath: '/api/public/agent/heartbeat'
+      preLoaderRoute: typeof ApiPublicAgentHeartbeatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
+interface AuthenticatedVpsRouteChildren {
+  AuthenticatedVpsIdRoute: typeof AuthenticatedVpsIdRoute
+  AuthenticatedVpsNewRoute: typeof AuthenticatedVpsNewRoute
+}
+
+const AuthenticatedVpsRouteChildren: AuthenticatedVpsRouteChildren = {
+  AuthenticatedVpsIdRoute: AuthenticatedVpsIdRoute,
+  AuthenticatedVpsNewRoute: AuthenticatedVpsNewRoute,
+}
+
+const AuthenticatedVpsRouteWithChildren =
+  AuthenticatedVpsRoute._addFileChildren(AuthenticatedVpsRouteChildren)
+
+interface AuthenticatedRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedNodesRoute: typeof AuthenticatedNodesRoute
+  AuthenticatedNotificationsRoute: typeof AuthenticatedNotificationsRoute
+  AuthenticatedPortForwardsRoute: typeof AuthenticatedPortForwardsRoute
+  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
+  AuthenticatedVpsRoute: typeof AuthenticatedVpsRouteWithChildren
+}
+
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedNodesRoute: AuthenticatedNodesRoute,
+  AuthenticatedNotificationsRoute: AuthenticatedNotificationsRoute,
+  AuthenticatedPortForwardsRoute: AuthenticatedPortForwardsRoute,
+  AuthenticatedProfileRoute: AuthenticatedProfileRoute,
+  AuthenticatedVpsRoute: AuthenticatedVpsRouteWithChildren,
+}
+
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+  AuthenticatedRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRoute: AuthenticatedRouteWithChildren,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
+  ApiPublicAgentHeartbeatRoute: ApiPublicAgentHeartbeatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

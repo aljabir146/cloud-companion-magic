@@ -60,17 +60,20 @@ export const Route = createFileRoute("/api/public/agent/heartbeat")({
         try { parsed = Body.parse(JSON.parse(raw)); }
         catch { return new Response("Invalid body", { status: 400 }); }
 
-        const update: Record<string, any> = { last_heartbeat: new Date().toISOString(), status: "online" };
-        if (parsed.used_cpu !== undefined) update.used_cpu = parsed.used_cpu;
-        if (parsed.used_ram !== undefined) update.used_ram = parsed.used_ram;
-        if (parsed.used_storage !== undefined) update.used_storage = parsed.used_storage;
-        await supabaseAdmin.from("nodes").update(update).eq("id", node.id);
+        await supabaseAdmin.from("nodes").update({
+          last_heartbeat: new Date().toISOString(),
+          status: "online",
+          ...(parsed.used_cpu !== undefined ? { used_cpu: parsed.used_cpu } : {}),
+          ...(parsed.used_ram !== undefined ? { used_ram: parsed.used_ram } : {}),
+          ...(parsed.used_storage !== undefined ? { used_storage: parsed.used_storage } : {}),
+        }).eq("id", node.id);
 
         if (parsed.vps?.length) {
           for (const v of parsed.vps) {
-            const u: Record<string, any> = { status: v.status };
-            if (v.ip_address) u.ip_address = v.ip_address;
-            await supabaseAdmin.from("vps").update(u).eq("id", v.id).eq("node_id", node.id);
+            await supabaseAdmin.from("vps").update({
+              status: v.status,
+              ...(v.ip_address ? { ip_address: v.ip_address } : {}),
+            }).eq("id", v.id).eq("node_id", node.id);
           }
         }
 
