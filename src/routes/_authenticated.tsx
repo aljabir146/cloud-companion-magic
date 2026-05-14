@@ -31,31 +31,31 @@ function AuthLayout() {
     );
   }
 
-  const groups: { label: string; items: { to: string; icon: typeof Server; label: string; adminOnly?: boolean; emoji?: string }[] }[] = [
+  const groups: { label: string; items: { to: string; icon: typeof Server; label: string; adminOnly?: boolean }[] }[] = [
     {
       label: "Main",
       items: [
-        { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard", emoji: "📊" },
-        { to: "/vps", icon: Server, label: "My VPS", emoji: "💻" },
-        { to: "/port-forwards", icon: Network, label: "Port Forwarding", emoji: "🔀" },
-        { to: "/backups", icon: HardDrive, label: "Backups", emoji: "💾" },
-        { to: "/console", icon: Terminal, label: "Web Console", emoji: "🖥️" },
-        { to: "/logs", icon: FileText, label: "Panel Logs", emoji: "📜" },
-        { to: "/api-keys", icon: Wrench, label: "API Keys", emoji: "🔑" },
+        { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+        { to: "/vps", icon: Server, label: "My VPS" },
+        { to: "/port-forwards", icon: Network, label: "Port Forwarding" },
+        { to: "/backups", icon: HardDrive, label: "Backups" },
+        { to: "/console", icon: Terminal, label: "Web Console" },
+        { to: "/logs", icon: FileText, label: "Panel Logs" },
+        { to: "/api-keys", icon: Wrench, label: "API Keys" },
       ],
     },
     {
       label: "Account",
       items: [
-        { to: "/profile", icon: User, label: "Profile", emoji: "🙂" },
-        { to: "/notifications", icon: Bell, label: "Notifications", emoji: "🔔" },
+        { to: "/profile", icon: User, label: "Profile" },
+        { to: "/notifications", icon: Bell, label: "Notifications" },
       ],
     },
     {
       label: "Administration",
       items: [
-        { to: "/admin", icon: Crown, label: "Admin Panel", adminOnly: true, emoji: "👑" },
-        { to: "/nodes", icon: HardDrive, label: "Nodes", adminOnly: true, emoji: "🗄️" },
+        { to: "/admin", icon: Crown, label: "Admin Panel", adminOnly: true },
+        { to: "/nodes", icon: HardDrive, label: "Nodes", adminOnly: true },
       ],
     },
   ];
@@ -72,12 +72,12 @@ function AuthLayout() {
         )}
       >
         <Link to="/dashboard" className="flex items-center gap-3 border-b border-sidebar-border px-5 py-5">
-          <div className="grid h-9 w-9 place-items-center rounded-md bg-gradient-to-br from-primary to-accent text-xl shadow">
-            <span className="emoji-anim">🐯</span>
+          <div className="grid h-10 w-10 place-items-center rounded-lg bg-gradient-to-br from-primary to-accent shadow-lg shadow-primary/30">
+            <Server className="h-5 w-5 text-primary-foreground" />
           </div>
           <div>
-            <div className="pixel-font text-sm font-bold">TigerHost</div>
-            <div className="text-[10px] uppercase tracking-widest text-muted-foreground">VM Panel</div>
+            <div className="pixel-font text-base font-bold tracking-tight">TigerHost</div>
+            <div className="text-[10px] uppercase tracking-widest text-primary/80">LXD · Cluster</div>
           </div>
         </Link>
 
@@ -103,7 +103,7 @@ function AuthLayout() {
                               : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground"
                           )}
                         >
-                          <span className="text-base">{i.emoji}</span>
+                          <i.icon className={cn("h-4 w-4", active ? "text-primary" : "text-muted-foreground group-hover:text-foreground")} />
                           <span className="flex-1">{i.label}</span>
                           {active && <span className="h-1.5 w-1.5 rounded-full bg-primary" />}
                         </Link>

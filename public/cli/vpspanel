@@ -1,0 +1,88 @@
+#!/bin/bash
+# TigerHost CLI — install to /usr/local/bin/vpspanel
+GREEN='\033[0;32m'; RED='\033[0;31m'; YELLOW='\033[1;33m'; BLUE='\033[0;34m'; NC='\033[0m'
+LXC=/snap/bin/lxc
+ROOT=/opt/tigerhost
+
+case "$1" in
+  status)
+    echo -e "${BLUE}TigerHost Status${NC}"
+    echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    if systemctl is-active --quiet tigerhost-daemon; then
+      echo -e "  Daemon: ${GREEN}● Running${NC}"
+    else
+      echo -e "  Daemon: ${RED}● Stopped${NC}"
+    fi
+    if /snap/bin/lxd waitready --timeout=2 2>/dev/null; then
+      C=$($LXC list --format json 2>/dev/null | jq length)
+      echo -e "  LXD:    ${GREEN}● Running${NC} (${C} containers)"
+    else
+      echo -e "  LXD:    ${RED}● Stopped${NC}"
+    fi
+    echo
+    $LXC storage info default 2>/dev/null | grep -E "space used|total space" | sed 's/^/  /'
+    ;;
+  logs)
+    case "$2" in
+      daemon|"") tail -f $ROOT/logs/daemon.log ;;
+      err|error) tail -f $ROOT/logs/daemon-error.log ;;
+      *) echo "Usage: vpspanel logs [daemon|err]" ;;
+    esac
+    ;;
+  start)   systemctl start tigerhost-daemon && echo -e "${GREEN}Started${NC}" ;;
+  stop)    systemctl stop tigerhost-daemon && echo -e "${YELLOW}Stopped${NC}" ;;
+  restart) systemctl restart tigerhost-daemon && echo -e "${GREEN}Restarted${NC}" ;;
+  tunnel)
+    echo -e "${BLUE}Cloudflare Tunnel${NC}"
+    echo "1. https://one.dash.cloudflare.com → Networks → Tunnels → Create"
+    echo "2. Name 'tigerhost' → copy token"
+    read -p "Paste tunnel token: " CF
+    if ! command -v cloudflared &>/dev/null; then
+      curl -L https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb -o /tmp/cf.deb
+      dpkg -i /tmp/cf.deb
+    fi
+    cloudflared service install "$CF"
+    systemctl start cloudflared && systemctl enable cloudflared
+    echo -e "${GREEN}✓ Tunnel connected${NC}"
+    echo "Add public hostname → URL http://localhost:3000"
+    ;;
+  update)
+    cd $ROOT && git pull origin main 2>/dev/null && pnpm install >/dev/null
+    systemctl restart tigerhost-daemon
+    echo -e "${GREEN}✓ Updated${NC}"
+    ;;
+  backup)
+    F="$ROOT/backups/panel-$(date +%Y%m%d-%H%M%S).tar.gz"
+    tar -czf "$F" -C $ROOT data .env 2>/dev/null
+    echo -e "${GREEN}✓ Backup: $F${NC}"
+    ;;
+  lxd-info)
+    $LXC list
+    echo
+    $LXC storage info default
+    ;;
+  vps)
+    case "$2" in
+      list) $LXC list ;;
+      create) $LXC launch "${4:-ubuntu:22.04}" "$3" ;;
+      start) $LXC start "$3" ;;
+      stop) $LXC stop "$3" --force ;;
+      delete) $LXC delete "$3" --force ;;
+      shell) $LXC exec "$3" -- bash ;;
+      *) echo "Usage: vpspanel vps {list|create <name> [image]|start <name>|stop <name>|delete <name>|shell <name>}" ;;
+    esac
+    ;;
+  *)
+    echo -e "${BLUE}TigerHost CLI${NC}"
+    echo "Usage: vpspanel <command>"
+    echo
+    echo "  status     Show daemon + LXD status"
+    echo "  start|stop|restart"
+    echo "  logs [daemon|err]"
+    echo "  vps {list|create|start|stop|delete|shell}"
+    echo "  tunnel     Setup Cloudflare tunnel"
+    echo "  update     Pull + restart"
+    echo "  backup     Snapshot data + .env"
+    echo "  lxd-info   Container + pool info"
+    ;;
+esac
