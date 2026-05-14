@@ -50,7 +50,7 @@ function LoginPage() {
         <form onSubmit={onSubmit} className="mt-6 space-y-4">
           <Field label="Username or email">
             <input required autoFocus value={identifier} onChange={(e) => setIdentifier(e.target.value)}
-              placeholder="jabir  or  you@example.com"
+              placeholder="your username or email"
               className="w-full rounded-md border border-input bg-background/50 px-3 py-2 text-sm outline-none focus:border-primary" />
           </Field>
           <Field label="Password">

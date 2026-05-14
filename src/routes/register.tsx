@@ -20,15 +20,32 @@ function RegisterPage() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
-    const redirectUrl = `${window.location.origin}/dashboard`;
-    const { error } = await supabase.auth.signUp({
-      email, password,
-      options: { emailRedirectTo: redirectUrl, data: { username } },
-    });
-    setLoading(false);
-    if (error) return toast.error(error.message);
-    toast.success("Account ready — welcome!");
-    nav({ to: "/dashboard" });
+    try {
+      const uname = username.trim().toLowerCase();
+      if (!/^[a-z0-9_-]{2,32}$/.test(uname)) throw new Error("Username must be 2-32 chars: letters, numbers, _ or -");
+      // Pre-check username availability
+      const { data: taken } = await supabase.rpc("lookup_email_by_username", { _username: uname });
+      if (taken) throw new Error("That username is already taken");
+
+      const redirectUrl = `${window.location.origin}/dashboard`;
+      const { error } = await supabase.auth.signUp({
+        email: email.trim(),
+        password,
+        options: { emailRedirectTo: redirectUrl, data: { username: uname } },
+      });
+      if (error) {
+        const msg = /registered|exists|already/i.test(error.message)
+          ? "That email already has an account — try signing in."
+          : error.message;
+        throw new Error(msg);
+      }
+      toast.success("Account created — welcome!");
+      nav({ to: "/dashboard" });
+    } catch (err: any) {
+      toast.error(err?.message || "Sign-up failed");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
