@@ -21,8 +21,9 @@ const OS_OPTIONS = [
 ];
 
 function NewVps() {
-  const { user } = useAuth();
+  const { user, isAdmin, loading } = useAuth();
   const nav = useNavigate();
+  useEffect(() => { if (!loading && !isAdmin) nav({ to: "/dashboard" }); }, [isAdmin, loading, nav]);
   const [name, setName] = useState("");
   const [type, setType] = useState<"lxc" | "vm">("lxc");
   const [os, setOs] = useState("ubuntu-22.04");
