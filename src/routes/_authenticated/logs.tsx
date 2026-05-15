@@ -76,7 +76,7 @@ function LogsPage() {
           <h1 className="pixel-font text-3xl font-bold flex items-center gap-2">
             <span className="emoji-anim">📜</span> Panel Logs
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">Live tail from <code className="rounded bg-secondary px-1 py-0.5">hvm_panel</code>, <code className="rounded bg-secondary px-1 py-0.5">werkzeug</code>, agents and TigerHost. Streamed in real time.</p>
+          <p className="text-sm text-muted-foreground mt-1">Live tail from <code className="rounded bg-secondary px-1 py-0.5">tigerhost_panel</code>, <code className="rounded bg-secondary px-1 py-0.5">werkzeug</code>, agents and TigerHost. Streamed in real time.</p>
         </div>
         <div className="flex items-center gap-2">
           <input
