@@ -28,9 +28,11 @@ function VpsList() {
           <h1 className="pixel-font text-2xl font-bold">My VPS <span className="emoji-anim">💻</span></h1>
           <p className="text-sm text-muted-foreground">All your virtual machines and containers.</p>
         </div>
-        <Link to="/vps/new" className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90">
-          <Plus className="h-4 w-4" /> Create VPS
-        </Link>
+        {isAdmin && (
+          <Link to="/vps/new" className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90">
+            <Plus className="h-4 w-4" /> Create VPS
+          </Link>
+        )}
       </div>
 
       {isLoading ? (
