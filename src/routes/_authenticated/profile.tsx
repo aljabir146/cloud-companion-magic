@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
-import { Save } from "lucide-react";
+import { Save, KeyRound } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/profile")({
   component: Profile,
