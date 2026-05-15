@@ -71,9 +71,11 @@ function Dashboard() {
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Link to="/vps/new" className="inline-flex items-center gap-2 rounded-md bg-primary px-3.5 py-2 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/30 hover:opacity-90">
-              <Plus className="h-4 w-4" /> Create VPS
-            </Link>
+            {isAdmin && (
+              <Link to="/vps/new" className="inline-flex items-center gap-2 rounded-md bg-primary px-3.5 py-2 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/30 hover:opacity-90">
+                <Plus className="h-4 w-4" /> Create VPS
+              </Link>
+            )}
             <Link to="/console" className="inline-flex items-center gap-2 rounded-md border border-border bg-background/70 px-3.5 py-2 text-sm font-medium hover:bg-background">
               <Terminal className="h-4 w-4" /> Console
             </Link>
@@ -94,13 +96,15 @@ function Dashboard() {
         <StatCard icon={HardDrive} label="Storage" value={`${totals.storage} GB`} accent="from-warning/80 to-accent/60" sub="provisioned" />
       </div>
 
-      {/* System & install row */}
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <SystemCard nodes={nodes} />
-        <InstallCard />
-      </div>
+      {/* Admin-only system & install row */}
+      {isAdmin && (
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+          <SystemCard nodes={nodes} />
+          <InstallCard />
+        </div>
+      )}
 
-      {/* Quick actions — clean icon tiles, no cheap emojis */}
+      {/* Quick actions */}
       <div>
         <h2 className="pixel-font mb-3 text-lg font-bold">Quick actions</h2>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7">
@@ -108,8 +112,8 @@ function Dashboard() {
           <QuickTile to="/port-forwards" icon={Network} label="Ports" />
           <QuickTile to="/backups" icon={HardDrive} label="Backups" />
           <QuickTile to="/console" icon={Terminal} label="Console" />
-          <QuickTile to="/logs" icon={FileText} label="Logs" />
-          <QuickTile to="/api-keys" icon={Wrench} label="API Keys" />
+          {isAdmin && <QuickTile to="/logs" icon={FileText} label="Logs" />}
+          {isAdmin && <QuickTile to="/api-keys" icon={Wrench} label="API Keys" />}
           <QuickTile to="/notifications" icon={Bell} label="Alerts" />
         </div>
       </div>
