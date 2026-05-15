@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/auth";
 import { Plus, Server } from "lucide-react";
 import { StatusBadge } from "./dashboard";
 
@@ -10,6 +11,7 @@ export const Route = createFileRoute("/_authenticated/vps")({
 });
 
 function VpsList() {
+  const { isAdmin } = useAuth();
   const { data: vps = [], isLoading } = useQuery({
     queryKey: ["vps-list"],
     queryFn: async () => {
