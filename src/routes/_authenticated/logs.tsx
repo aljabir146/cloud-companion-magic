@@ -1,6 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/_authenticated/logs")({
   component: LogsPage,
@@ -36,6 +37,9 @@ function fmtTs(iso: string) {
 }
 
 function LogsPage() {
+  const { isAdmin, loading } = useAuth();
+  const nav = useNavigate();
+  useEffect(() => { if (!loading && !isAdmin) nav({ to: "/dashboard" }); }, [isAdmin, loading, nav]);
   const [logs, setLogs] = useState<Log[]>([]);
   const [filter, setFilter] = useState<"ALL" | "INFO" | "WARNING" | "ERROR">("ALL");
   const [paused, setPaused] = useState(false);
@@ -76,7 +80,7 @@ function LogsPage() {
           <h1 className="pixel-font text-3xl font-bold flex items-center gap-2">
             <span className="emoji-anim">📜</span> Panel Logs
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">Live tail from <code className="rounded bg-secondary px-1 py-0.5">hvm_panel</code>, <code className="rounded bg-secondary px-1 py-0.5">werkzeug</code>, agents and TigerHost. Streamed in real time.</p>
+          <p className="text-sm text-muted-foreground mt-1">Live tail from <code className="rounded bg-secondary px-1 py-0.5">tigerhost_panel</code>, <code className="rounded bg-secondary px-1 py-0.5">werkzeug</code>, agents and TigerHost. Streamed in real time.</p>
         </div>
         <div className="flex items-center gap-2">
           <input
