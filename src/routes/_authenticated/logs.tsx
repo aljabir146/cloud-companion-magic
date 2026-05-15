@@ -37,6 +37,9 @@ function fmtTs(iso: string) {
 }
 
 function LogsPage() {
+  const { isAdmin, loading } = useAuth();
+  const nav = useNavigate();
+  useEffect(() => { if (!loading && !isAdmin) nav({ to: "/dashboard" }); }, [isAdmin, loading, nav]);
   const [logs, setLogs] = useState<Log[]>([]);
   const [filter, setFilter] = useState<"ALL" | "INFO" | "WARNING" | "ERROR">("ALL");
   const [paused, setPaused] = useState(false);
