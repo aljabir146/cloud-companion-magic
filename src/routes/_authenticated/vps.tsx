@@ -41,8 +41,8 @@ function VpsList() {
         <div className="glass rounded-xl p-12 text-center">
           <div className="mb-3 text-5xl"><span className="emoji-anim">📦</span></div>
           <h3 className="pixel-font text-lg font-bold">No VPS yet</h3>
-          <p className="mt-1 text-sm text-muted-foreground">Spin up your first container or VM.</p>
-          <Link to="/vps/new" className="mt-5 inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"><Plus className="h-4 w-4" /> Create VPS</Link>
+          <p className="mt-1 text-sm text-muted-foreground">{isAdmin ? "Spin up your first container or VM." : "Ask an admin to provision a VPS for you."}</p>
+          {isAdmin && <Link to="/vps/new" className="mt-5 inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"><Plus className="h-4 w-4" /> Create VPS</Link>}
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
