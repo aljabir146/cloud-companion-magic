@@ -63,6 +63,48 @@ function Profile() {
           </button>
         </form>
       </div>
+
+      <PasswordCard />
+    </div>
+  );
+}
+
+function PasswordCard() {
+  const [pw, setPw] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (pw.length < 8) return toast.error("Password must be at least 8 characters");
+    if (pw !== confirm) return toast.error("Passwords do not match");
+    setBusy(true);
+    const { error } = await supabase.auth.updateUser({ password: pw });
+    setBusy(false);
+    if (error) return toast.error(error.message);
+    setPw(""); setConfirm("");
+    toast.success("Password updated");
+  }
+
+  return (
+    <div className="glass rounded-2xl p-6">
+      <div className="mb-4 flex items-center gap-2">
+        <KeyRound className="h-4 w-4 text-primary" />
+        <h2 className="pixel-font text-lg font-bold">Change password</h2>
+      </div>
+      <form onSubmit={submit} className="space-y-4">
+        <Field label="New password">
+          <input type="password" value={pw} onChange={(e) => setPw(e.target.value)} minLength={8} required
+            className="w-full rounded-md border border-input bg-background/50 px-3 py-2 text-sm focus:border-primary outline-none" />
+        </Field>
+        <Field label="Confirm new password">
+          <input type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} minLength={8} required
+            className="w-full rounded-md border border-input bg-background/50 px-3 py-2 text-sm focus:border-primary outline-none" />
+        </Field>
+        <button disabled={busy} className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-50">
+          <KeyRound className="h-4 w-4" /> {busy ? "Updating…" : "Update password"}
+        </button>
+      </form>
     </div>
   );
 }
