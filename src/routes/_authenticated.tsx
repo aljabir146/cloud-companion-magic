@@ -40,8 +40,8 @@ function AuthLayout() {
         { to: "/port-forwards", icon: Network, label: "Port Forwarding" },
         { to: "/backups", icon: HardDrive, label: "Backups" },
         { to: "/console", icon: Terminal, label: "Web Console" },
-        { to: "/logs", icon: FileText, label: "Panel Logs" },
-        { to: "/api-keys", icon: Wrench, label: "API Keys" },
+        { to: "/logs", icon: FileText, label: "Panel Logs", adminOnly: true },
+        { to: "/api-keys", icon: Wrench, label: "API Keys", adminOnly: true },
       ],
     },
     {
